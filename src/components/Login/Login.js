@@ -1,4 +1,4 @@
-// import firebase from 'firebase';
+import { Button } from "@material-ui/core";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import React, { useContext } from "react";
@@ -25,18 +25,28 @@ const Login = () => {
         const { displayName, email } = result.user;
         const signedInUser = { name: displayName, email };
         setLoggedInUser(signedInUser);
-        history.replace(from);
-        // console.log(signedInUser);
+        storeAuthToken();
       })
       .catch((error) => {
         const errorMessage = error.message;
         console.log(errorMessage);
       });
   };
+
+  const storeAuthToken = () => {
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true)
+    .then(function(idToken) {
+      sessionStorage.setItem('token', idToken);
+      history.replace(from);
+    }).catch(function(error) {
+      // Handle error
+    });
+  }
+
   return (
     <div>
       <h1>This is Login</h1>
-      <button onClick={handleGoogleSignIn}>Google Sign In</button>
+      <Button onClick={handleGoogleSignIn} variant="contained" color="secondary">Google Sign In </Button>
     </div>
   );
 };
